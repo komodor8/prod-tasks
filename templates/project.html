@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    {% load static %}
+     <!-- Latest compiled and minified CSS -->
+     <link
+        rel="stylesheet"
+        href="{% static "bootstrap/css/main.css" %}">
+    <link
+        rel="stylesheet"
+        href="{% static "bootstrap/css/bootstrap.min.css" %}">
+    <link
+        rel="stylesheet"
+        href="{% static "bootstrap/css/bootstrap-responsive.min.css" %}">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+     <link
+        rel="stylesheet"
+        href="{% static "Select/select.min.css" %}">
+
+    <script src="{% static "Select/select.full.min.js" %}"></script>
+
+
+    <link
+        rel="application/javascript"
+        href="{% static "bootstrap/css/bootstrap-alerts.js" %}">
+
+
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="navbar-inner">
+            <a class="brand" href="/">{{ user }}'s Home</a>
+            <ul class="nav">
+                {% if user.is_authenticated %}
+                    <li>
+                        <a href="/admin">Admin</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'accounts:profile' pk=user.pk %}">My profile</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'tasks:index' %}">Tasks</a>
+                    </li>
+                    <li>
+                        <a>Polls</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'accounts:logout' %}">Logout</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{% url 'accounts:login' %}">Login</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'accounts:signup' %}">Join the machine task club</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="container-fluid">
+
+        {% block body_block %}
+
+        {% endblock %}
+    </div>
+
+    <script>
+    $( document ).ready(function() {
+
+        $('.close').click(function(){
+            $(".alert").css("display", "none");
+        });
+    });
+    </script>
+</body>
+</html>

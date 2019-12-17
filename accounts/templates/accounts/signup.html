@@ -1,0 +1,23 @@
+{% extends "project.html" %}
+
+
+{% block body_block %}
+    <div class="well">
+
+        <h1>Sign Up</h1>
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form }}
+            <div>
+                <input
+                    type="submit"
+                    class="btn btn-success"
+                    value="Sign Up"
+                >
+            </div>
+
+        </form>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+li {
+   list-style: none;
+}
+
+.helptext {
+	font-style: italic;
+	color: #186900;
+	font-size: 12px;
+}

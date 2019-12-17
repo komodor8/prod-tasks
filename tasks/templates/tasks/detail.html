@@ -1,0 +1,231 @@
+{% extends "project.html" %}
+
+
+{% block body_block %}
+
+    {% if not perms.tasks.add_comment %}
+        <div style="margin-bottom: 15px">
+            <span class="label label-info"> Little reminder to you {{ user }}! You don't have the right permission to add a comment</span>
+        </div>
+    {% endif %}
+
+    {% include "messages.html" with messages=messages %}
+
+    <div class="well" style="margin-bottom: 50px">
+        <h3>{{task.name}}</h3>
+        <div>Task name:
+            <h6>{{task.name}}</h6>
+        </div>
+
+        <div>Task number:
+            <h6>{{task.id}}</h6>
+        </div>
+
+        <div>Task description:
+            <h6>{{task.description}}</h6>
+        </div>
+
+        <div>Task date:
+            <h6>{{task.is_done}}</h6>
+        </div>
+
+        <div>Task published:
+            <h6>{{task.due_date}}</h6>
+        </div>
+
+        <div>Task done:
+            <h6>{{task.is_done}}</h6>
+        </div>
+
+        <form action="{% url 'tasks:update' pk=task.pk %}">
+            <button
+                class="btn btn-primary"
+                type="submit"
+            >
+                update task {{task.pk}}
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="well">
+        <h3>Shared users</h3>
+        <form
+            action="{% url 'tasks:share' pk=task.pk %}"
+            method="POST"
+        >
+            {% csrf_token %}
+
+            {{ invited_users_form }}
+
+            <div style="margin-top: 20px">
+                <button
+                    class="btn btn-success"
+                    type="submit"
+                >
+                    Share
+                </button>
+            </div>
+
+        </form>
+
+        <div>
+            <h5>List of users I have shared this task with</h5>
+            {% if invited_users %}
+                <table class="table table-condensed">
+                  <thead>
+                      <tr>
+                          <td><strong>First name</strong></td>
+                          <td><strong>Last name</strong></td>
+                          <td><strong>Username</strong></td>
+                          <td><strong>ID</strong></td>
+                          <td><strong>Group of Permissions</strong></td>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {% for iu in invited_users %}
+                        <tr>
+                            <td>{{ iu.first_name }}</td>
+                            <td>{{ iu.last_name }}</td>
+                            <td>{{ iu.username }}</td>
+                            <td>{{ iu.id }}</td>
+                            <td>{{ user.user_permission }}</td>
+                        </tr>
+                    {% endfor %}
+
+                  </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+
+    <div>
+        <h2>Comments</h2>
+        <h3>Add a comment</h3>
+
+        <form
+            action="{% url 'tasks:comments-create' task=task.pk %}"
+            method="post"
+        >
+            {% csrf_token %}
+
+            {{ comment_form }}
+
+            <div>
+                <button
+                    class="btn btn-primary"
+                    type="submit"
+                >
+                    <i class="icon-plus icon-white"></i>
+                    Add
+                </button>
+            </div>
+
+        </form>
+
+        <div>
+            <h4>List of comments</h4>
+
+            {% for c in task.comment_set.all %}
+                <div
+                    id="comment_{{ c.id }}"
+                    class="well"
+                >
+                    <h5>Title: {{ c.title }}</h5>
+                    <p>Description: {{ c.description }}</p>
+
+                    <div style="margin-bottom: 15px">
+                        <button
+                            class="btn btn-success"
+                            value="{{ c.id }}"
+                        >
+                            <i class="icon-pencil icon-white"></i>
+                            Edit
+                        </button>
+                    </div>
+
+
+                    <form
+                        action="{% url 'tasks:comments-delete' task=task.pk pk=c.pk %}"
+                        method="post"
+                    >
+                        {% csrf_token %}
+
+                        <button
+                            class="btn btn-danger"
+                            type="submit"
+                        >
+                            <i class="icon-trash icon-white"></i>Delete
+                        </button>
+                    </form>
+                </div>
+
+
+                <div id="update_comment_{{ c.id }}" class="well hide">
+
+                    <form
+                        action="{% url 'tasks:comments-update' task=task.pk pk=c.pk %}"
+                        method="post"
+                    >
+                        {% csrf_token %}
+                        <div>
+                            <div>Title:</div>
+                            <input
+                                name="title"
+                                value={{ c.title }}
+                            />
+                        </div>
+
+                        <div>
+                            <div>Description:</div>
+                            <textarea
+                                name="description"
+                                value="{{ c.description }}"
+                            >{{ c.description }}</textarea>
+                        </div>
+
+                        <button
+                            class="btn btn-success"
+                            type="submit"
+                        >
+                            <i class="icon-ok icon-white"></i>
+                            Save
+                        </button>
+
+                    </form>
+
+                    <button
+                        class="btn btn-inverse"
+                        value="{{ c.id }}"
+                    >
+                        <i class="icon-remove icon-white"></i>
+                        Cancel
+                    </button>
+
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <script>
+
+        $( document ).ready(function() {
+            // add the class "select2-hidden-accessible" to the select element
+            $('.js-example-basic-multiple').select2();
+
+            $("button").click(function() {
+                if (this.value !== '') {
+                    let id = this.value;
+                    $( "#comment_" + id ).toggleClass( "hide" );
+                    $( "#update_comment_" + id ).toggleClass( "hide" );
+                }
+            });
+
+        });
+
+    </script>
+
+
+{% endblock %}

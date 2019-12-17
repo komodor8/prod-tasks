@@ -1,0 +1,64 @@
+{% extends "project.html" %}
+
+
+{% block body_block %}
+
+{% include "messages.html" with messages=messages %}
+
+<div class="well">
+    <div>
+        <h2 style="margin-bottom : 50px">My profile</h2>
+        <div>
+            Name:
+        </div>
+        <span><strong>{{ user }}</strong></span>
+    </div>
+    <div>
+        <div>
+            First name:
+        </div>
+        <span><strong>{{ user.first_name }}</strong></span>
+    </div>
+    <div>
+        <div>
+            Last name:
+        </div>
+        <span><strong>{{ user.last_name }}</strong></span>
+    </div>
+    <div>
+        <div>
+            Am I staff ?
+        </div>
+        <span><strong>{{ user.is_staff }}</strong></span>
+    </div>
+    <div>
+        <div>
+            Am I active ?
+        </div>
+        <span><strong>{{ user.is_active }}</strong></span>
+    </div>
+    <div>
+        <div>
+            Email:
+        </div>
+        <span><strong>{{ user.email }}</strong></span>
+    </div>
+    <div>
+        <div>
+            Subscription date:
+        </div>
+        <span><strong>{{ user.date_joined }}</strong></span>
+    </div>
+</div>
+
+<div>
+    <a
+        class="btn btn btn-primary"
+        href="/accounts/profile/{{ user.pk }}/update"
+    >
+        Update my profile
+    </a>
+</div>
+
+
+{% endblock %}
